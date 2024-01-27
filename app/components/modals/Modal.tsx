@@ -45,6 +45,8 @@ const Modal: React.FC<ModalProps> = ({
     }, [disabled, onClose])
 
     const handleSubmit = useCallback(() => {
+        console.log('here');
+
         if (disabled) {
             return
         }
@@ -145,7 +147,7 @@ const Modal: React.FC<ModalProps> = ({
                                     )}
                                     <Button
                                         label={actionLabel}
-                                        disabled={disabled}     
+                                        disabled={disabled}
                                         onClick={handleSubmit}
                                     />
                                 </div>

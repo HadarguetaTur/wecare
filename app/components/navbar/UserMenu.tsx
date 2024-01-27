@@ -1,18 +1,28 @@
 'use client'
 
-import React, {useState, useCallback} from 'react'
+import React, { useState, useCallback } from 'react'
 import { AiOutlineMenu } from 'react-icons/ai'
 import Links from './Links'
 import Search from './Search'
 import Avatar from '../avatar/Avatar'
 import OpenMenu from './OpenMenu'
+import { User } from '@prisma/client'
+import MenuItems from './MenuItems'
+import useRegisterModal from '@/app/hooks/useRegisterModal'
+import useLoginModal from '@/app/hooks/useLoginModal'
+import { signOut } from 'next-auth/react'
 
-const UserMenu = () => {
-    const [isOpen, setIsOpen]= useState(false)
+interface UserMenuProps {
+    currentUser?: User | null;
+}
 
-    const toggleOpen = useCallback(()=>{
-        setIsOpen((value)=>!value);
-    },[])
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
+    const [isOpen, setIsOpen] = useState(false)
+    const registerModal = useRegisterModal();
+    const loginModal = useLoginModal()
+    const toggleOpen = useCallback(() => {
+        setIsOpen((value) => !value);
+    }, [])
 
     return (
         <div className='relative'>
@@ -41,12 +51,61 @@ const UserMenu = () => {
                 >
                     <AiOutlineMenu size={18} />
                     <div className='hidden md:block'>
-                        <Avatar/>
+                        <Avatar src={currentUser?.image}/>
                     </div>
                 </div>
             </div>
-            {isOpen &&(
-                <OpenMenu/>
+            {isOpen && (
+                <div className='
+                        absolute
+                        rounded-xl
+                        shadow-md
+                        w-[40vw]
+                        md:w-3/4
+                        bg-white
+                        overflow-hidden
+                        right-0
+                        top-12
+                        text-sm
+                        '>
+                    <div className='flex flex-col cursor-pointer'>
+                        {currentUser ? (
+                            <>
+                                <MenuItems
+                                    onClick={()=>{}}
+                                    label='Smart diagnostic'
+                                />
+                                <MenuItems
+                                    onClick={()=>{}}
+                                    label='Profile'
+                                />
+                                <MenuItems
+                                    onClick={()=>{}}
+                                    label='my communities'
+                                />
+                                <MenuItems
+                                    onClick={()=>signOut()}
+                                    label='Logout'
+                                />
+                            </>
+                        ) :
+                            (
+                                <>
+                                    <MenuItems
+                                        onClick={loginModal.onOpen}
+                                        label='Login'
+                                    />
+                                    <MenuItems
+                                        onClick={registerModal.onOpen}
+                                        label='Sign up'
+                                    />
+                                </>
+
+
+                            )}
+
+                    </div>
+                </div>
             )}
         </div>
     )

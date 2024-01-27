@@ -3,26 +3,48 @@ import prisma from '@/app/libs/prismadb'
 import { NextResponse } from 'next/server';
 
 export async function POST(
-    request:Request
-){
-    const body = await request.json();
-    const {
-        email,
-        name,
-        password
-    } = body
+    request: Request
+) {
+    try {
+        const body = await request.json();
+        console.log(body);
+
+        const {
+            email,
+            name,
+            password,
+            isCareProvider,
+            description,
+            category
+        } = body
 
 
-const hashedPassword = await bcrypt.hash(password,12);
+        const hashedPassword = await bcrypt.hash(password, 12);
 
-const user =await prisma.user.create({
-    data: {
-        email,
-        name,
-        hashedPassword
+        const newUser = await prisma.user.create({
+            data: {
+                email,
+                name,
+                hashedPassword,
+                isCareProvider
+            }
+        })
+        if(isCareProvider===true){
+            const newProvider = await prisma.treatments.create({
+                data:{
+                    id: newUser.id,
+                    userId:newUser.id,
+                    title: name,
+                    description,
+                    category,
+                }
+    
+            })       
+        }
+
+     
+        return NextResponse.json(newUser)
+    } catch (error) {
+        console.log(error);
     }
-})
- return NextResponse.json(user)
-
-
 }

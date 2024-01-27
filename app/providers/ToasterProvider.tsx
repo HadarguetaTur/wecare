@@ -4,10 +4,10 @@ import { Toaster } from "react-hot-toast"
 
 import React from 'react'
 
-const ToasterProvaider=() => {
+const ToasterProvider=() => {
   return (
     <Toaster/>
   )
 }
 
-export default ToasterProvaider
+export default ToasterProvider

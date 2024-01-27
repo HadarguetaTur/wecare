@@ -1,6 +1,6 @@
 'use client'
+import { signIn } from 'next-auth/react'
 import React from 'react'
-import axios from 'axios'
 import { FcGoogle } from 'react-icons/fc'
 import { FiInstagram } from 'react-icons/fi'
 import { useCallback, useState } from 'react'
@@ -17,10 +17,12 @@ import Input from '../input/Input'
 import toast from 'react-hot-toast/headless'
 import Button from '../button/Button'
 import useLoginModal from '@/app/hooks/useLoginModal'
+import { useRouter } from 'next/navigation'
 
 const LoginModal = () => {
+    const router = useRouter()
     const registerModal = useRegisterModal();
-    const loginModal=useLoginModal()
+    const loginModal = useLoginModal()
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -36,23 +38,35 @@ const LoginModal = () => {
         }
     });
 
+
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
-
-        axios.post('/api/login', data)
-            .then(() => {
-                loginModal.onClose();
-            })
-            .catch((error) => {
-                toast.error('somthing wrong');
-            })
-            .finally(() => {
+        signIn('credentials', {
+            ...data,
+            redirect: false
+        })
+            .then((callback) => {
                 setIsLoading(false)
+                if (callback?.ok) {
+                    toast.success('Logged in!')
+                    router.refresh();
+                    loginModal.onClose()
+                }
+                if (callback?.error) {
+                    toast.error(callback.error)
+                }
             })
-    }
+    };
+
+    const toggle = useCallback(() => {
+        loginModal.onClose()
+        registerModal.onOpen();
+
+
+    }, [loginModal, registerModal])
 
     const bodyContent = (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4' >
             <Heading
                 title='Welcome back'
                 subtitle='Login to your account!'
@@ -86,7 +100,7 @@ const LoginModal = () => {
                 outline
                 label='Continue with Google'
                 icon={FcGoogle}
-                onClick={() => { }}
+                onClick={() => signIn('google')}
             />
             <Button
                 outline
@@ -97,9 +111,9 @@ const LoginModal = () => {
             <div className='text-neutral-500 text-center mt-4 font-light'>
                 <div className='flex flex-row justify-center items-center gap-2'>
                     <div>
-                    Don't have an account yet?
+                        Don't have an account yet?
                     </div>
-                    <div onClick={registerModal.onOpen} className='text-neutral-800 cursor-pointer hover:underline '>
+                    <div onClick={toggle} className='text-neutral-800 cursor-pointer hover:underline '>
                         Register
                     </div>
 

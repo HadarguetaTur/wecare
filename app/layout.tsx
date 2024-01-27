@@ -5,9 +5,10 @@ import './globals.css'
 import Navbar from './components/navbar/Navbar'
 import BottomNavbar from './components/navbar/BottomNavbar'
 import RegisterModal from './components/modals/RegisterModal'
-import ToasterProvaider from './provaiders/ToasterProvaider'
 import LoginModal from './components/modals/LoginModal'
 import getCurrentUser from './actions/getCurrentUser'
+import ClientOnly from './components/clientOnly'
+import ToasterProvider from './providers/ToasterProvider'
 
 
 const font=Nunito({
@@ -30,10 +31,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToasterProvaider/>
+        <ToasterProvider/>
         <RegisterModal/>
         <LoginModal/>
-        <Navbar currentUser={currentUser}/>
+        <ClientOnly>
+          <Navbar currentUser={currentUser}/>
+        </ClientOnly>  
         {children}
         <BottomNavbar/>
         </body>

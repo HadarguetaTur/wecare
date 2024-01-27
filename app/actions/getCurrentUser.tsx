@@ -1,14 +1,15 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth/next";
 import prisma from '@/app/libs/prismadb';
 
 export async function getSession() {
-    return await getServerSession(authOptions);
+    return await getServerSession();
 }
 
 export default async function getCurrentUser() {
     try {
         const session =await getSession();
+        console.log('Session:', session);
+        
         if(!session?.user?.email){
             return null
         }
@@ -19,15 +20,14 @@ export default async function getCurrentUser() {
             }
         });
 
-        if(!currentUser){
+        if(!currentUser){     
             return null
         }
 
         return currentUser
         
-    } catch (error:any) {
-        return null
-        
+    } catch (error:any) {   
+        return null       
     }
     
 }
