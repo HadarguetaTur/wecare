@@ -9,6 +9,8 @@ import LoginModal from './components/modals/LoginModal'
 import getCurrentUser from './actions/getCurrentUser'
 import ClientOnly from './components/clientOnly'
 import ToasterProvider from './providers/ToasterProvider'
+import DiagnosisModal from './components/modals/diagnosisModal'
+
 
 
 const font=Nunito({
@@ -34,6 +36,7 @@ export default async function RootLayout({
         <ToasterProvider/>
         <RegisterModal/>
         <LoginModal/>
+        <DiagnosisModal currentUser={currentUser}/>
         <ClientOnly>
           <Navbar currentUser={currentUser}/>
         </ClientOnly>  

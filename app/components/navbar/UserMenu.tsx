@@ -11,6 +11,7 @@ import MenuItems from './MenuItems'
 import useRegisterModal from '@/app/hooks/useRegisterModal'
 import useLoginModal from '@/app/hooks/useLoginModal'
 import { signOut } from 'next-auth/react'
+import useDiagnosisModal from '@/app/hooks/diagnosis'
 
 interface UserMenuProps {
     currentUser?: User | null;
@@ -20,9 +21,19 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     const [isOpen, setIsOpen] = useState(false)
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal()
+    const diagnosisModal= useDiagnosisModal()
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
-    }, [])
+    }, []);
+
+    const onDiagnosis = useCallback(()=>{
+        if(!currentUser){
+            return loginModal.onOpen()
+        }
+        diagnosisModal.onOpen()
+
+
+    },[currentUser,loginModal])
 
     return (
         <div className='relative'>
@@ -72,7 +83,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                         {currentUser ? (
                             <>
                                 <MenuItems
-                                    onClick={()=>{}}
+                                    onClick={onDiagnosis}
                                     label='Smart diagnostic'
                                 />
                                 <MenuItems

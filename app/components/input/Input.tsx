@@ -9,6 +9,7 @@ interface InputProps {
   disabled?: boolean;
   formatPrice?: boolean;
   required?: boolean;
+  options?: string[];
   register: UseFormRegister<FieldValues>;
   errors: FieldErrors;
 }
@@ -16,14 +17,52 @@ interface InputProps {
 const Input: React.FC<InputProps> = ({
   id,
   label,
-  type = 'text', // default to 'text' if type is not provided
+  type = 'text',
   disabled,
   formatPrice,
   required,
+  options,
   register,
   errors,
 }) => {
-  // Render a checkbox input differently
+  if (type === 'textarea') {
+    return (
+      <div className="w-full mx-auto">
+
+        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">{label}</label>
+        <textarea
+          {...register(id, { required })}
+          id={label}
+          rows={4}
+          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Your message..."
+          disabled={disabled}
+        ></textarea>
+      </div>
+    )
+  }
+  if (type === 'select' && options) {
+    return (
+      <div className='w-full relative'>
+        <label htmlFor={id} className='block  font-medium text-gray-700'>
+          {label}
+        </label>
+        <select
+          id={id}
+          disabled={disabled}
+          {...register(id, { required })}
+          className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ${errors[id] ? 'border-rose-500' : 'border-neutral-300'}`}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
   if (type === 'checkbox') {
     return (
       <div className='w-full flex items-center'>
@@ -41,7 +80,7 @@ const Input: React.FC<InputProps> = ({
     );
   }
 
-  // Render other input types as before
+
   return (
     <div className='w-full relative'>
       {formatPrice && (

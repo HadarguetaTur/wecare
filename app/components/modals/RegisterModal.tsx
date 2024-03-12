@@ -19,6 +19,7 @@ import toast from 'react-hot-toast/headless'
 import Button from '../button/Button'
 import useLoginModal from '@/app/hooks/useLoginModal'
 import { signIn } from 'next-auth/react'
+import { categoriesOfTerapies } from '@/app/static-data/utils'
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal();
@@ -47,7 +48,7 @@ const RegisterModal = () => {
         registerModal.onClose();
         loginModal.onOpen()
 
-    },[loginModal,registerModal])
+    }, [loginModal, registerModal])
 
     const isCareProvider = useWatch({
         control,
@@ -62,11 +63,8 @@ const RegisterModal = () => {
         axios.post('/api/register', data)
             .then((newUser) => {
                 registerModal.onClose();
-                if(data.isCareProvider){
-                   console.log(newUser);
-
-                   
-
+                if (data.isCareProvider) {
+                    console.log(newUser);
                 }
             })
             .catch((error) => {
@@ -126,32 +124,17 @@ const RegisterModal = () => {
             />
             {isCareProvider && (
                 <>
-                    <select
-                        {...register('category', { required: true })}
+                    <Input
+                        id="category"
+                        label='Select Field'
                         disabled={isLoading}
-                        className='w-full p-2 border-2 rounded-md'
-                    >
-                        <option value="">Select Field</option>
-                        <option value="occupationalTherapy">Occupational Therapy</option>
-                        <option value="developmentalMedicine">Developmental Medicine</option>
-                        <option value="pediatricPsychology">Pediatric Psychology</option>
-                        <option value="speechLanguageTherapy">Speech and Language Therapy</option>
-                        <option value="specialEducation">Special Education</option>
-                        <option value="pediatricNutrition">Pediatric Nutrition</option>
-                        <option value="earlyChildhoodEducation">Early Childhood Education</option>
-                        <option value="childPsychiatry">Child Psychiatry</option>
-                        <option value="pediatricPhysicalTherapy">Pediatric Physical Therapy</option>
-                        <option value="behavioralTherapy">Behavioral Therapy</option>
-                        <option value="childLifeSpecialist">Child Life Specialist</option>
-                        <option value="socialWorkPediatrics">Social Work in Pediatrics</option>
-                        <option value="developmentalBehavioralPediatrics">Developmental Behavioral Pediatrics</option>
-                        <option value="pediatricNeurology">Pediatric Neurology</option>
-                        <option value="childDevelopmentalResearch">Child Developmental Research</option>
-                        <option value="playTherapy">Play Therapy</option>
-                        <option value="familyTherapy">Family Therapy</option>
-                        <option value="pediatricOccupationalHealth">Pediatric Occupational Health</option>
-                        <option value="earlyInterventionServices">Early Intervention Services</option>
-                    </select>
+                        register={register}
+                        options={categoriesOfTerapies}
+                        errors={errors}
+                        required
+                        type='select'
+
+                    />
                     <Input
                         id="description"
                         label='Describe your expertise'
